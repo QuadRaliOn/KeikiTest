@@ -6,12 +6,9 @@ using Architecture.Services;
 using UI.Factory;
 using Zenject;
 
-namespace Installers
-{
-    public class Bootstrapper : MonoInstaller, ICoroutineRunner, IInitializable
-    {
-        public override void InstallBindings()
-        {
+namespace Installers {
+    public class Bootstrapper : MonoInstaller, ICoroutineRunner, IInitializable {
+        public override void InstallBindings() {
             BindInstaller();
             BindAssetProvider();
             BindUIFactory();
@@ -24,15 +21,11 @@ namespace Installers
         private void BindInstaller() =>
             Container.BindInterfacesTo<Bootstrapper>().FromInstance(this).AsSingle();
 
-        private void BindAssetProvider()
-        {
+        private void BindAssetProvider() => 
             Container.BindInterfacesAndSelfTo<AssetProvider>().AsSingle();
-        }
 
-        private void BindUIFactory()
-        {
+        private void BindUIFactory() => 
             Container.BindInterfacesAndSelfTo<UIFactory>().AsSingle();
-        }
 
         private void BindGameStateMachine() =>
             Container.BindInterfacesAndSelfTo<GameStateMachine>().AsSingle();
@@ -40,8 +33,7 @@ namespace Installers
         private void BindStateFactory() =>
             Container.BindInterfacesAndSelfTo<StateFactory>().AsSingle();
 
-        private void BindGameStates()
-        {
+        private void BindGameStates() {
             Container.BindInterfacesAndSelfTo<BootstrapState>().AsSingle();
             Container.BindInterfacesAndSelfTo<MainMenuState>().AsSingle();
             Container.BindInterfacesAndSelfTo<GameplayState>().AsSingle();

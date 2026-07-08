@@ -1,3 +1,5 @@
+using UnityEngine;
+
 namespace Architecture.GlobalStateMachine.States
 {
     public class BootstrapState : IState
@@ -9,16 +11,24 @@ namespace Architecture.GlobalStateMachine.States
             _stateMachine = stateMachine;
         }
 
-        public void Enter()
-        {
-            // QualitySettings.vSyncCount = 0;
-            // Application.targetFrameRate = 60;
+        public void Enter() {
+            SetLandscapeOrientation();
 
-            _stateMachine.Enter<GameplayState>();
+            _stateMachine.Enter<MainMenuState>();
         }
 
         public void Exit()
         {
+        }
+
+        private static void SetLandscapeOrientation() {
+            Screen.autorotateToPortrait = false;
+            Screen.autorotateToPortraitUpsideDown = false;
+            
+            Screen.autorotateToLandscapeLeft = true;
+            Screen.autorotateToLandscapeRight = true;
+            
+            Screen.orientation = ScreenOrientation.AutoRotation;
         }
     }
 }
