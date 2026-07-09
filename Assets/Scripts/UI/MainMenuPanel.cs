@@ -65,9 +65,32 @@ namespace UI.Factory
                 string shapePath = shapePaths[i];
                 Sprite iconSprite = _assetProvider.LoadAsset<Sprite>(shapePath);
 
+                int totalLevels = _levelService.GetTotalLevelsInCategory(catType);
+                if (levelContainer.childCount == 0 && totalLevels > 0)
+                {
+                    Debug.LogWarning($"MainMenuPanel: No level button templates found in container for category {categoryTitles[i]}");
+                    continue;
+                }
+
+                Transform buttonTemplate = levelContainer.childCount > 0 ? levelContainer.GetChild(0) : null;
+
+                // Instantiate missing buttons
+                for (int j = levelContainer.childCount; j < totalLevels; j++)
+                {
+                    Instantiate(buttonTemplate, levelContainer);
+                }
+
+                // Configure buttons, hiding any extra templates
                 for (int j = 0; j < levelContainer.childCount; j++)
                 {
                     Transform levelButton = levelContainer.GetChild(j);
+                    if (j >= totalLevels)
+                    {
+                        levelButton.gameObject.SetActive(false);
+                        continue;
+                    }
+
+                    levelButton.gameObject.SetActive(true);
                     Button btn = levelButton.GetComponent<Button>();
                     
                     if (btn != null)
