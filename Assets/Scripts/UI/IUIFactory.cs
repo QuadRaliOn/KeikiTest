@@ -1,5 +1,6 @@
-﻿namespace UI.Factory {
+namespace UI.Factory {
     public interface IUIFactory {
         MainMenuPanel CreateMainMenuPanel();
+        GamePlayPanel CreateGamePlayPanel();
     }
 }

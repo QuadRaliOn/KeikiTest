@@ -1,11 +1,12 @@
 ﻿using Architecture.Services;
 using UI.Factory;
-using UnityEngine.SceneManagement;
+using UnityEngine;
 
 namespace Architecture.GlobalStateMachine.States {
     public class MainMenuState : IState {
         private readonly SceneLoader _sceneLoader;
         private readonly UIFactory _uiFactory;
+        private MainMenuPanel _mainMenuPanel;
 
         public MainMenuState(SceneLoader sceneLoader, UIFactory uiFactory) {
             _uiFactory = uiFactory;
@@ -17,10 +18,11 @@ namespace Architecture.GlobalStateMachine.States {
         }
 
         private void OnSceneLoaded() {
-            _uiFactory.CreateMainMenuPanel();
+            _mainMenuPanel = _uiFactory.CreateMainMenuPanel();
         }
 
         public void Exit() {
+            Object.Destroy(_mainMenuPanel.gameObject);
         }
     }
 }

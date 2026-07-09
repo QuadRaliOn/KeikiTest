@@ -1,0 +1,79 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea915b79c688430b984b86ed32a3c8ea, type: 3}
+  m_Name: LevelDatabase
+  m_EditorClassIdentifier: 
+  Levels:
+  - name: A
+    spritePath: Graphics/shape_A
+    audioPath: Sounds/Follow_the_stars_and_trace_the_letter
+    trailColor: {r: 0.6, g: 0.2, b: 0.8, a: 1}
+    category: 0
+    strokes:
+    - points:
+      - {x: -1.6802593, y: 384.5849}
+      - {x: -49.513687, y: 241.00285}
+      - {x: -94.63276, y: 104.24265}
+      - {x: -144.0139, y: -53.02854}
+      - {x: -195.58301, y: -216.30975}
+      - {x: -250.17723, y: -386.10028}
+    - points:
+      - {x: -1.4818299, y: 382.95053}
+      - {x: 44.388237, y: 214.5081}
+      - {x: 105.15819, y: 27.05281}
+      - {x: 183.51372, y: -184.33173}
+      - {x: 253.12936, y: -387.84012}
+    - points:
+      - {x: -180.18495, y: -167.23488}
+      - {x: -75.9767, y: -167.23488}
+      - {x: 52.54615, y: -166.35074}
+      - {x: 173.55365, y: -167.67699}
+  - name: 1
+    spritePath: Graphics/shape_1
+    audioPath: Sounds/Follow_the_stars_and_trace_the_number_en
+    trailColor: {r: 0.1, g: 0.7, b: 0.4, a: 1}
+    category: 1
+    strokes:
+    - points:
+      - {x: -141.20055, y: 74.82953}
+      - {x: -7.0590453, y: 225.76436}
+      - {x: 122.74824, y: 371.774}
+    - points:
+      - {x: 95, y: 380}
+      - {x: 95, y: 190}
+      - {x: 95, y: 0}
+      - {x: 95, y: -190}
+      - {x: 95, y: -380}
+  - name: Circle
+    spritePath: Graphics/shape_circle
+    audioPath: Sounds/Follow_the_stars_and_trace_the_number_en
+    trailColor: {r: 1, g: 0.5, b: 0, a: 1}
+    category: 2
+    strokes:
+    - points:
+      - {x: 0, y: 336}
+      - {x: -128.4, y: 310.8}
+      - {x: -237.6, y: 237.6}
+      - {x: -310.8, y: 128.4}
+      - {x: -336, y: 0}
+      - {x: -310.8, y: -128.4}
+      - {x: -237.6, y: -237.6}
+      - {x: -128.4, y: -310.8}
+      - {x: 0, y: -336}
+      - {x: 128.4, y: -310.8}
+      - {x: 237.6, y: -237.6}
+      - {x: 310.8, y: -128.4}
+      - {x: 336, y: 0}
+      - {x: 310.8, y: 128.4}
+      - {x: 237.6, y: 237.6}
+      - {x: 128.4, y: 310.8}
+      - {x: 0, y: 336}

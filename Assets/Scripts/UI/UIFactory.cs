@@ -2,7 +2,7 @@ using Architecture.Services;
 using Zenject;
 
 namespace UI.Factory {
-    public class UIFactory {
+    public class UIFactory : IUIFactory {
         private IAssetProvider _assetProvider;
         private DiContainer _container;
 
@@ -15,6 +15,11 @@ namespace UI.Factory {
         public MainMenuPanel CreateMainMenuPanel() {
             var panel = _assetProvider.LoadAsset(AssetPath.MainMenu);
             return _container.InstantiatePrefabForComponent<MainMenuPanel>(panel);
+        }
+
+        public GamePlayPanel CreateGamePlayPanel() {
+            var panel = _assetProvider.LoadAsset(AssetPath.GamePlay);
+            return _container.InstantiatePrefabForComponent<GamePlayPanel>(panel);
         }
     }
 }
