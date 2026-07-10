@@ -1,4 +1,3 @@
-using System;
 using Architecture.Boot;
 using Architecture.GlobalStateMachine;
 using Architecture.GlobalStateMachine.Factory;
@@ -71,11 +70,7 @@ namespace Installers {
         }
 
         private void BindLevelService() {
-            LevelDatabase db = UnityEngine.Resources.Load<LevelDatabase>("LevelDatabase");
-            if (db == null) {
-                db = UnityEngine.ScriptableObject.CreateInstance<LevelDatabase>();
-                UnityEngine.Debug.LogWarning("LevelDatabase asset not found in Resources. Using empty instance.");
-            }
+            LevelDatabase db = Resources.Load<LevelDatabase>(AssetPath.LevelDatabase);
             Container.Bind<LevelDatabase>().FromInstance(db).AsSingle();
             Container.Bind<ILevelService>().To<LevelService>().AsSingle();
         }

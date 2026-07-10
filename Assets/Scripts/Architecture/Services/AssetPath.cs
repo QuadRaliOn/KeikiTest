@@ -2,6 +2,8 @@ namespace Architecture.Services
 {
     public static class AssetPath
     {
+        public const string LevelDatabase = "LevelDatabase";
+        
         public const string MainMenu = "UI/Panels/MainMenuPanel";
         public const string GamePlay = "UI/Panels/GamePlayPanel";
         public const string SceneTransitionOverlay = "UI/Panels/SceneTransitionOverlay";

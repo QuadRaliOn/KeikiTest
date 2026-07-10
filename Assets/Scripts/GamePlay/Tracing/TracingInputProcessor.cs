@@ -5,8 +5,9 @@ using UnityEngine.InputSystem;
 
 namespace GamePlay.Tracing {
     public class TracingInputProcessor {
-        private const float OutOfBoundsPixelRadius = 80f;
-        private const float ReachedPointPixelRadius = 35f;
+        private const float OutOfBoundsPixelRadius = 150f;
+        private const float ReachedPointPixelRadius = 10f;
+        private const float MascotLerpSpeed = 25f;
         
         private readonly GamePlayPanel _gamePlayPanel;
         private readonly TracingStrokeView _view;
@@ -63,10 +64,10 @@ namespace GamePlay.Tracing {
         }
 
         private void ProcessTracing(Vector2 localPoint) {
-            Vector2 a = _view.GetPointAt(_currentPointIndex);
-            Vector2 b = _view.GetPointAt(_currentPointIndex + 1);
+            Vector2 source = _view.GetPointAt(_currentPointIndex);
+            Vector2 target = _view.GetPointAt(_currentPointIndex + 1);
 
-            Vector2 projection = ProjectOntoSegment(localPoint, a, b);
+            Vector2 projection = ProjectOntoSegment(localPoint, source, target);
             float distToPath = Vector2.Distance(localPoint, projection);
 
             if (distToPath >= OutOfBoundsPixelRadius) {
@@ -74,10 +75,13 @@ namespace GamePlay.Tracing {
                 return;
             }
 
-            _view.SetMascotPosition(projection);
-            _view.UpdateTrail(_currentPointIndex, projection);
+            Vector2 currentMascotPos = _view.GetMascotPosition();
+            Vector2 smoothedPos = Vector2.Lerp(currentMascotPos, projection, MascotLerpSpeed * Time.deltaTime);
 
-            if (Vector2.Distance(projection, b) < ReachedPointPixelRadius)
+            _view.SetMascotPosition(smoothedPos);
+            _view.UpdateTrail(_currentPointIndex, smoothedPos);
+
+            if (Vector2.Distance(smoothedPos, target) < ReachedPointPixelRadius)
                 AdvanceToNextPoint();
         }
 

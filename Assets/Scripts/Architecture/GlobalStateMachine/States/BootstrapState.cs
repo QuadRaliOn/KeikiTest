@@ -13,6 +13,7 @@ namespace Architecture.GlobalStateMachine.States
 
         public void Enter() {
             SetLandscapeOrientation();
+            ConfigureTargetFrameRate();
 
             _stateMachine.Enter<MainMenuState>();
         }
@@ -28,7 +29,11 @@ namespace Architecture.GlobalStateMachine.States
             Screen.autorotateToLandscapeLeft = true;
             Screen.autorotateToLandscapeRight = true;
             
-            Screen.orientation = ScreenOrientation.AutoRotation;
+            Screen.orientation = ScreenOrientation.LandscapeLeft;
+        }
+
+        private static void ConfigureTargetFrameRate() {
+            Application.targetFrameRate = 60;
         }
     }
 }
