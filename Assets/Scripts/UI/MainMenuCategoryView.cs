@@ -17,8 +17,7 @@ namespace UI.Factory {
         }
 
         public void Configure(CategoryType categoryType, string title, Sprite icon, ILevelService levelService, System.Action<CategoryType, int> onLevelSelected) {
-            if (_label != null) _label.text = title;
-            if (_levelContainer == null) return;
+            _label.text = title;
 
             foreach (Transform child in _levelContainer) {
                 Destroy(child.gameObject);

@@ -46,21 +46,17 @@ namespace Architecture.GlobalStateMachine.States {
 
         public void Exit() {
             _isActive = false;
-
-            _activeSession?.Dispose();
-            _activeSession = null;
-
-            if (_gamePlayPanel != null) {
-                _gamePlayPanel.OnHomePressed -= OnHomePressed;
-                Object.Destroy(_gamePlayPanel.gameObject);
-                _gamePlayPanel = null;
-            }
-
-            _activeLevel = null;
+            
+            _activeSession.LevelCompleted -= OnLevelCompleted;
+            _activeSession.Dispose();
+            
+            _gamePlayPanel.OnHomePressed -= OnHomePressed;
+            Object.Destroy(_gamePlayPanel.gameObject);
         }
 
         private void OnSceneLoaded() {
-            if (!_isActive) return;
+            if (!_isActive) 
+                return;
 
             _activeLevel = _levelService.GetActiveLevel();
             _gamePlayPanel = _uiFactory.CreateGamePlayPanel();
@@ -70,10 +66,13 @@ namespace Architecture.GlobalStateMachine.States {
             _gamePlayPanel.OnHomePressed += OnHomePressed;
 
             _activeSession = _sessionFactory.Create(_gamePlayPanel, _activeLevel);
-            _activeSession.Start(OnLevelCompleted);
+            _activeSession.LevelCompleted += OnLevelCompleted;
+            _activeSession.Start();
         }
 
         private void OnLevelCompleted() {
+            _activeSession.LevelCompleted -= OnLevelCompleted;
+            
             int totalLevels = _levelService.GetTotalLevelsInCategory(_activeLevel.category);
             int nextLvlIdx = (_levelService.ActivePayload.LevelIndex + 1) % totalLevels;
             _levelService.ActivePayload = new GameplayStatePayload(_activeLevel.category, nextLvlIdx);

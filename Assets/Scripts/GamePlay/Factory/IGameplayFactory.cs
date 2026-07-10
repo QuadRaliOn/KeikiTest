@@ -10,6 +10,6 @@ namespace GamePlay.Factory
         Image CreateStar(Transform parent, Vector2 position);
         Image CreateMascot(Transform parent, Vector2 startPosition, Action onReady);
         Image CreateTrailSegment(Transform parent, Color color);
-        Image CreateFingerHint(Transform parent, Vector2 position);
+        IGameplayHint CreateFingerHint(Transform parent, Vector2 position);
     }
 }

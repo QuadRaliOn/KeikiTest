@@ -11,7 +11,6 @@ namespace GamePlay.Tracing {
         
         private readonly GamePlayPanel _gamePlayPanel;
         private readonly TracingStrokeView _view;
-        
         private Action _onStrokeCompleted;
 
         private int _totalPoints;
@@ -35,11 +34,10 @@ namespace GamePlay.Tracing {
         }
 
         public void ProcessInput() {
-            if (_isComplete) return;
+            if (_isComplete) 
+                return;
 
             Pointer pointer = Pointer.current;
-            if (pointer == null) return;
-
             if (!pointer.press.isPressed) {
                 _isTracing = false;
                 return;

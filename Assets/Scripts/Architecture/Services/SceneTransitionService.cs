@@ -5,6 +5,8 @@ using UI.Factory;
 
 namespace Architecture.Services {
     public class SceneTransitionService : ISceneTransitionService {
+        private const float Duration = 0.4f;
+        
         private readonly IUIFactory _uiFactory;
         private CanvasGroup _fadeOverlay;
 
@@ -20,7 +22,7 @@ namespace Architecture.Services {
             _fadeOverlay.blocksRaycasts = true;
             _fadeOverlay.alpha = 0f;
 
-            _fadeOverlay.DOFade(1f, 0.4f).SetUpdate(true).OnComplete(() => fadeDone = true);
+            _fadeOverlay.DOFade(1f, Duration).SetUpdate(true).OnComplete(() => fadeDone = true);
 
             while (!fadeDone)
                 yield return null;
@@ -31,7 +33,7 @@ namespace Architecture.Services {
 
             bool fadeDone = false;
 
-            _fadeOverlay.DOFade(0f, 0.4f).SetUpdate(true).OnComplete(() => {
+            _fadeOverlay.DOFade(0f, Duration).SetUpdate(true).OnComplete(() => {
                 _fadeOverlay.gameObject.SetActive(false);
                 _fadeOverlay.blocksRaycasts = false;
                 fadeDone = true;

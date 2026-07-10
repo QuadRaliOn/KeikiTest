@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
 using DG.Tweening;
+using GamePlay;
 using GamePlay.Factory;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Zenject;
 
 namespace Architecture.Services {
     public class IdleHintService : IIdleHintService {
@@ -13,15 +15,15 @@ namespace Architecture.Services {
 
         private readonly ISoundService _soundService;
         private readonly IGameplayFactory _gameplayFactory;
-
-        private float _idleTimer;
-        private string _audioPath;
+        
         private List<Vector2> _currentStrokePoints;
+        private IGameplayHint _hint;
         private RectTransform _container;
         private RectTransform _fingerParent;
-        private GameObject _fingerGo;
-        private RectTransform _fingerRect;
         private Sequence _fingerSequence;
+        
+        private float _idleTimer;
+        private string _audioPath;
 
         private enum State {
             Inactive,
@@ -65,16 +67,15 @@ namespace Architecture.Services {
                 _state = State.WaitingVoice;
         }
 
-        public void Tick(float deltaTime) {
+        public void Tick() {
             if (_state == State.Inactive)
                 return;
 
             Pointer pointer = Pointer.current;
-            if (pointer != null && pointer.press.isPressed) {
+            if (pointer != null && pointer.press.isPressed) 
                 ResetIdleTimer();
-            }
 
-            _idleTimer += deltaTime;
+            _idleTimer += Time.deltaTime;
 
             if (_state == State.WaitingVoice && _idleTimer >= VoiceHintDelay) {
                 _soundService.PlayAudio(_audioPath);
@@ -92,33 +93,29 @@ namespace Architecture.Services {
 
         private void ShowFingerHint() {
             var startPos = ContainerToFingerParent(_currentStrokePoints[0]);
-            var finger = _gameplayFactory.CreateFingerHint(_fingerParent, startPos);
-            _fingerGo = finger.gameObject;
-            _fingerRect = finger.rectTransform;
-
-            var cg = _fingerGo.GetComponent<CanvasGroup>();
-            cg.alpha = 0f;
-            cg.DOFade(1f, 0.3f).OnComplete(StartFingerCycle);
+            _hint = _gameplayFactory.CreateFingerHint(_fingerParent, startPos);
+            
+            _hint.canvasGroup.alpha = 0f;
+            _hint.canvasGroup.DOFade(1f, 0.3f).OnComplete(StartFingerCycle);
         }
 
         private void StartFingerCycle() {
             _fingerSequence?.Kill();
-            var cg = _fingerGo.GetComponent<CanvasGroup>();
             var seq = DOTween.Sequence();
 
             for (int i = 0; i < _currentStrokePoints.Count - 1; i++) {
                 var to = ContainerToFingerParent(_currentStrokePoints[i + 1]);
                 var from = ContainerToFingerParent(_currentStrokePoints[i]);
                 float duration = Vector2.Distance(from, to) / FingerMoveSpeed;
-                seq.Append(_fingerRect.DOAnchorPos(to, duration).SetEase(Ease.Linear));
+                seq.Append(_hint.rectTransform.DOAnchorPos(to, duration).SetEase(Ease.Linear));
             }
 
             seq.AppendInterval(0.5f);
-            seq.Append(cg.DOFade(0f, 0.2f));
+            seq.Append(_hint.canvasGroup.DOFade(0f, 0.2f));
             seq.AppendCallback(() => {
-                _fingerRect.anchoredPosition = ContainerToFingerParent(_currentStrokePoints[0]);
+                _hint.rectTransform.anchoredPosition = ContainerToFingerParent(_currentStrokePoints[0]);
             });
-            seq.Append(cg.DOFade(1f, 0.2f));
+            seq.Append(_hint.canvasGroup.DOFade(1f, 0.2f));
             seq.OnComplete(StartFingerCycle);
 
             _fingerSequence = seq;
@@ -127,15 +124,9 @@ namespace Architecture.Services {
         private void HideFingerHint() {
             _fingerSequence?.Kill();
             _fingerSequence = null;
-
-            if (_fingerGo == null) return;
             
-            var targetGo = _fingerGo;
-            _fingerGo = null;
-            _fingerRect = null;
-            
-            targetGo.GetComponent<CanvasGroup>().DOFade(0f, 0.2f)
-                .OnComplete(() => UnityEngine.Object.Destroy(targetGo));
+            _hint.canvasGroup.DOFade(0f, 0.2f)
+                .OnComplete(() => UnityEngine.Object.Destroy(_hint.container));
         }
 
         private Vector2 ContainerToFingerParent(Vector2 containerLocal) {

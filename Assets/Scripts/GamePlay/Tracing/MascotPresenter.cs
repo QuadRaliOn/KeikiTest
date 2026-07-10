@@ -42,14 +42,11 @@ namespace GamePlay.Tracing {
         }
 
         public void AnimateOut(float duration) {
-            
             _mascotGo.transform.DOScale(0f, duration).SetEase(Ease.InBack);
         }
 
         public void Clear() {
              Object.Destroy(_mascotGo);
-            _mascotGo = null;
-            _mascotRect = null;
         }
     }
 }

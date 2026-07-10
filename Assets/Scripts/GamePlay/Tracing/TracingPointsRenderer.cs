@@ -11,8 +11,8 @@ namespace GamePlay.Tracing {
 
         private readonly RectTransform _container;
         private readonly IGameplayFactory _gameplayFactory;
-
         private readonly List<GameObject> _circleGos = new();
+        
         private GameObject _starGo;
 
         public TracingPointsRenderer(GamePlayPanel gamePlayPanel, IGameplayFactory gameplayFactory) {
@@ -34,27 +34,22 @@ namespace GamePlay.Tracing {
         }
 
         public void BringStarToFront() {
-            if (_starGo != null) {
-                _starGo.transform.SetAsLastSibling();
-            }
+            _starGo.transform.SetAsLastSibling();
         }
 
         public void AnimateOut(float duration) {
-            if (_starGo != null)
-                _starGo.transform.DOScale(0f, duration).SetEase(Ease.InBack);
+            _starGo.transform.DOScale(0f, duration).SetEase(Ease.InBack);
 
             foreach (var circle in _circleGos) {
-                if (circle != null)
-                    circle.transform.DOScale(0f, duration).SetEase(Ease.InBack);
+                circle.transform.DOScale(0f, duration).SetEase(Ease.InBack);
             }
         }
 
         public void Clear() {
-            if (_starGo != null) Object.Destroy(_starGo);
-            _starGo = null;
+            Object.Destroy(_starGo);
 
             foreach (var circle in _circleGos) {
-                if (circle != null) Object.Destroy(circle);
+                Object.Destroy(circle);
             }
             _circleGos.Clear();
         }

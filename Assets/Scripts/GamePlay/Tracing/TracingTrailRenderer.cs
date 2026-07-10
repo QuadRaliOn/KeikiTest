@@ -54,8 +54,7 @@ namespace GamePlay.Tracing {
 
         public void ArchiveCompletedSegments() {
             foreach (var segment in _trailSegments) {
-                if (segment != null)
-                    _completedTrailSegments.Add(segment);
+                _completedTrailSegments.Add(segment);
             }
             _trailSegments.Clear();
         }
@@ -97,8 +96,7 @@ namespace GamePlay.Tracing {
 
         private static void DestroyGameObjects(List<RectTransform> list) {
             foreach (var item in list) {
-                if (item != null)
-                    Object.Destroy(item.gameObject);
+                Object.Destroy(item.gameObject);
             }
         }
     }

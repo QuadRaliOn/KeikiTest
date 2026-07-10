@@ -61,6 +61,7 @@ namespace Installers {
             subContainer.Bind<TracingPointsRenderer>().AsSingle();
             subContainer.Bind<TracingStrokeView>().AsSingle();
             subContainer.Bind<TracingInputProcessor>().AsSingle();
+            subContainer.Bind<GameplayAnimator>().AsSingle();
             subContainer.Bind<GameplaySession>().AsSingle();
         }
 

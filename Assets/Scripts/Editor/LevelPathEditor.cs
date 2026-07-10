@@ -1,9 +1,9 @@
 #if UNITY_EDITOR
 using System.Collections.Generic;
-using Architecture.Services;
+using GamePlay;
 using UnityEngine;
 
-namespace GamePlay {
+namespace Editor {
     [ExecuteInEditMode]
     public class LevelPathEditor : MonoBehaviour {
         [Header("Database Reference")] public LevelDatabase database;

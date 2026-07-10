@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Architecture.GlobalStateMachine;
 using GamePlay;
 
@@ -13,9 +12,8 @@ namespace Architecture.Services {
         public GameplayStatePayload ActivePayload { get; set; }
 
         public LevelData GetActiveLevel() {
-            if (ActivePayload == null) {
+            if (ActivePayload == null) 
                 ActivePayload = new GameplayStatePayload(CategoryType.Letters, 0);
-            }
 
             return GetLevel(ActivePayload.Category, ActivePayload.LevelIndex);
         }
@@ -31,7 +29,8 @@ namespace Architecture.Services {
         }
 
         public int GetTotalLevelsInCategory(CategoryType category) {
-            if (_database == null || _database.Levels == null) return 0;
+            if (_database == null || _database.Levels == null) 
+                return 0;
 
             return _database.Levels.FindAll(l => l.category == category).Count;
         }

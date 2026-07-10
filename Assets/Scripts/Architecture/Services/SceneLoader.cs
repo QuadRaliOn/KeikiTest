@@ -9,8 +9,8 @@ namespace Architecture.Services {
         private readonly ICoroutineRunner _coroutineRunner;
         private readonly ISceneTransitionService _transitionService;
 
-        public SceneLoader(ICoroutineRunner _coroutineRunner, ISceneTransitionService transitionService) {
-            this._coroutineRunner = _coroutineRunner;
+        public SceneLoader(ICoroutineRunner coroutineRunner, ISceneTransitionService transitionService) {
+            _coroutineRunner = coroutineRunner;
             _transitionService = transitionService;
         }
 
@@ -20,9 +20,8 @@ namespace Architecture.Services {
         private IEnumerator Load(int nextScene, Action onLoaded) {
             bool isSameScene = SceneManager.GetActiveScene().buildIndex == nextScene;
 
-            if (!isSameScene) {
+            if (!isSameScene)
                 yield return _transitionService.FadeOut();
-            }
 
             if (!isSameScene) {
                 AsyncOperation waitNextScene = SceneManager.LoadSceneAsync(nextScene);
@@ -32,9 +31,8 @@ namespace Architecture.Services {
 
             onLoaded?.Invoke();
 
-            if (!isSameScene) {
+            if (!isSameScene)
                 yield return _transitionService.FadeIn();
-            }
         }
     }
 }

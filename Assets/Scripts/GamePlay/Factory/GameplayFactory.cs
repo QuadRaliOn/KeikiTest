@@ -17,7 +17,7 @@ namespace GamePlay.Factory {
         }
 
         public Image CreatePoint(Transform parent, Vector2 position, int index, float staggerDelay) {
-            var point = InstantiateImage(AssetPath.Point, parent);
+            var point = Instantiate<Image>(AssetPath.Point, parent);
             point.rectTransform.anchoredPosition = position;
             point.color = new Color(1f, 1f, 1f, 0f);
 
@@ -28,22 +28,19 @@ namespace GamePlay.Factory {
         }
 
         public Image CreateStar(Transform parent, Vector2 position) {
-            Image img = InstantiateImage(AssetPath.Star, parent);
+            Image img = Instantiate<Image>(AssetPath.Star, parent);
 
             RectTransform rect = img.rectTransform;
             rect.anchoredPosition = position;
-
             rect.transform.SetAsLastSibling();
-
             rect.DOScale(1.0f, 0.5f).From(0f).SetDelay(0.7f).SetEase(Ease.OutBack);
 
             return img;
         }
 
         public Image CreateMascot(Transform parent, Vector2 startPosition, Action onReady) {
-            Image img = InstantiateImage(AssetPath.Mascot, parent);
+            Image img = Instantiate<Image>(AssetPath.Mascot, parent);
             img.rectTransform.anchoredPosition = startPosition;
-
             img.transform.DOScale(1.0f, 0.5f).From(0f).SetDelay(0.7f).SetEase(Ease.OutBack)
                 .OnComplete(() => onReady?.Invoke());
 
@@ -51,22 +48,22 @@ namespace GamePlay.Factory {
         }
 
         public Image CreateTrailSegment(Transform parent, Color color) {
-            Image img = InstantiateImage(AssetPath.TrailSegment, parent);
+            Image img = Instantiate<Image>(AssetPath.TrailSegment, parent);
             img.color = color;
             return img;
         }
 
-        public Image CreateFingerHint(Transform parent, Vector2 position) {
-            var image = InstantiateImage(AssetPath.Finger, parent);
+        public IGameplayHint CreateFingerHint(Transform parent, Vector2 position) {
+            var hint = Instantiate<IGameplayHint>(AssetPath.Finger, parent);
             
-            image.rectTransform.anchoredPosition = position;
-            image.rectTransform.SetAsLastSibling();
-            return image;
+            hint.rectTransform.anchoredPosition = position;
+            hint.rectTransform.SetAsLastSibling();
+            return hint;
         }
 
-        private Image InstantiateImage(string path, Transform parent) {
+        private T Instantiate<T>(string path, Transform parent) {
             GameObject prefab = _assetProvider.LoadAsset(path);
-            return _container.InstantiatePrefabForComponent<Image>(prefab, parent);
+            return _container.InstantiatePrefabForComponent<T>(prefab, parent);
         }
     }
 }
