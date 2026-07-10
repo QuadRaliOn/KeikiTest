@@ -80,7 +80,7 @@ namespace Installers {
             Container.Bind<ISoundService>().To<SoundService>().AsSingle();
 
         private void BindIdleHintService() =>
-            Container.Bind<IIdleHintService>().To<IdleHintService>().AsSingle();
+            Container.BindInterfacesAndSelfTo<IdleHintService>().AsSingle();
 
         public void Initialize() =>
             Container.Resolve<IGameStateMachine>().Enter<BootstrapState>();

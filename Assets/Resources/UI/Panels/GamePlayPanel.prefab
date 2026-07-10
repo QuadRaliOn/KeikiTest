@@ -12,8 +12,8 @@ GameObject:
   - component: {fileID: 4940055428795092180}
   - component: {fileID: 6771985235926780652}
   - component: {fileID: 3255194239248359809}
-  - component: {fileID: 7989532136054738250}
   - component: {fileID: 8566385458809940367}
+  - component: {fileID: 1165850510186395697}
   m_Layer: 0
   m_Name: TracingContainer
   m_TagString: Untagged
@@ -91,22 +91,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ShowMaskGraphic: 1
---- !u!114 &7989532136054738250
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 260399172521624484}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cf1d610518f80d14481e256d2ad81066, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  database: {fileID: 11400000, guid: 6298c153999e202499f076dc1832a9ab, type: 2}
-  targetLevelName: A
-  strokeIndex: 0
-  points: []
 --- !u!225 &8566385458809940367
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -119,6 +103,22 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &1165850510186395697
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 260399172521624484}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3484736701fa22942b0608e169e12bf3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  database: {fileID: 0}
+  targetLevelName: 
+  strokeIndex: 0
+  points: []
 --- !u!1 &1825321259853241571
 GameObject:
   m_ObjectHideFlags: 0

@@ -101,3 +101,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01968f6ae503403d8f898ddf41bfac12, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <container>k__BackingField: {fileID: 1360528905291324883}
+  <canvasGroup>k__BackingField: {fileID: 7650056016337618495}
+  <rectTransform>k__BackingField: {fileID: 1496845491338517426}
+  <image>k__BackingField: {fileID: 9082308555247320826}

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using GamePlay;
 using UnityEngine;
 
-namespace Editor {
+namespace GamePlay {
     [ExecuteInEditMode]
     public class LevelPathEditor : MonoBehaviour {
         [Header("Database Reference")] public LevelDatabase database;

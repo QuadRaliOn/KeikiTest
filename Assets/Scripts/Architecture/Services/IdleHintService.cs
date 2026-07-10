@@ -15,13 +15,13 @@ namespace Architecture.Services {
 
         private readonly ISoundService _soundService;
         private readonly IGameplayFactory _gameplayFactory;
-        
+
         private List<Vector2> _currentStrokePoints;
         private IGameplayHint _hint;
         private RectTransform _container;
         private RectTransform _fingerParent;
         private Sequence _fingerSequence;
-        
+
         private float _idleTimer;
         private string _audioPath;
 
@@ -72,7 +72,7 @@ namespace Architecture.Services {
                 return;
 
             Pointer pointer = Pointer.current;
-            if (pointer != null && pointer.press.isPressed) 
+            if (pointer != null && pointer.press.isPressed)
                 ResetIdleTimer();
 
             _idleTimer += Time.deltaTime;
@@ -94,7 +94,7 @@ namespace Architecture.Services {
         private void ShowFingerHint() {
             var startPos = ContainerToFingerParent(_currentStrokePoints[0]);
             _hint = _gameplayFactory.CreateFingerHint(_fingerParent, startPos);
-            
+
             _hint.canvasGroup.alpha = 0f;
             _hint.canvasGroup.DOFade(1f, 0.3f).OnComplete(StartFingerCycle);
         }
@@ -124,9 +124,10 @@ namespace Architecture.Services {
         private void HideFingerHint() {
             _fingerSequence?.Kill();
             _fingerSequence = null;
-            
-            _hint.canvasGroup.DOFade(0f, 0.2f)
-                .OnComplete(() => UnityEngine.Object.Destroy(_hint.container));
+
+            if (_hint is { isAvaliable: true }) 
+                _hint.canvasGroup.DOFade(0f, 0.2f)
+                    .OnComplete(() => UnityEngine.Object.Destroy(_hint.container));
         }
 
         private Vector2 ContainerToFingerParent(Vector2 containerLocal) {
