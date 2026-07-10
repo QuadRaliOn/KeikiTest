@@ -33,6 +33,12 @@ namespace GamePlay.Tracing {
             _starGo = starImg.gameObject;
         }
 
+        public void BringStarToFront() {
+            if (_starGo != null) {
+                _starGo.transform.SetAsLastSibling();
+            }
+        }
+
         public void AnimateOut(float duration) {
             if (_starGo != null)
                 _starGo.transform.DOScale(0f, duration).SetEase(Ease.InBack);

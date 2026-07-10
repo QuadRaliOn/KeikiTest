@@ -59,6 +59,7 @@ namespace GamePlay.Tracing {
             _inputProcessorEnabled = false;
 
             _idleHintService.StopTracking();
+            _soundService.StopAudio();
 
             _strokeView?.DestroyVisuals();
 

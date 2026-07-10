@@ -37,5 +37,13 @@ namespace Architecture.Services
             string selectedPhrase = phrases[Random.Range(0, phrases.Length)];
             return PlayAudio($"Sounds/{selectedPhrase}");
         }
+
+        public void StopAudio()
+        {
+            if (_audioSource != null && _audioSource.isPlaying)
+            {
+                _audioSource.Stop();
+            }
+        }
     }
 }

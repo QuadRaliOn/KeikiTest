@@ -6,5 +6,6 @@ namespace Architecture.Services
     {
         float PlayAudio(string path);
         float PlayRandomPhrase(string[] phrases);
+        void StopAudio();
     }
 }

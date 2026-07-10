@@ -29,6 +29,7 @@ namespace GamePlay.Tracing {
 
             _pointsRenderer.Spawn(stroke.points);
             _trailRenderer.Spawn(stroke.points, trailColor);
+            _pointsRenderer.BringStarToFront();
             _mascotPresenter.Spawn(stroke.points[0], onReady);
         }
 

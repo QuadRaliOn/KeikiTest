@@ -26,7 +26,6 @@ namespace UI.Factory {
         public CanvasGroup CreateSceneTransitionOverlay() {
             var prefab = _assetProvider.LoadAsset(AssetPath.SceneTransitionOverlay);
             var go = _container.InstantiatePrefab(prefab);
-            UnityEngine.Object.DontDestroyOnLoad(go);
             return go.GetComponent<CanvasGroup>();
         }
 
