@@ -27,6 +27,7 @@ namespace Editor {
 
             GUILayout.Space(5);
 
+            CreateDistributePointsButton();
             CreateClearPointsButton();
             CreateRemovePointButton();
         }
@@ -69,6 +70,22 @@ namespace Editor {
             }
         }
 
+        private void CreateDistributePointsButton() {
+            if (_editor.points.Count > 2) {
+                if (GUILayout.Button("Distribute Points Evenly")) {
+                    Undo.RecordObject(_editor, "Distribute Points Evenly");
+                    Vector2 start = _editor.points[0];
+                    Vector2 end = _editor.points[_editor.points.Count - 1];
+                    int count = _editor.points.Count;
+                    for (int i = 1; i < count - 1; i++) {
+                        float t = (float)i / (count - 1);
+                        _editor.points[i] = Vector2.Lerp(start, end, t);
+                    }
+                    EditorUtility.SetDirty(_editor);
+                }
+            }
+        }
+
         private void CreateClearPointsButton() {
             if (GUILayout.Button("Clear Points")) {
                 Undo.RecordObject(_editor, "Clear Points");
@@ -97,15 +114,25 @@ namespace Editor {
         }
 
         private void DrawLabels() {
-            Handles.color = Color.white;
             GUIStyle labelStyle = new GUIStyle();
             labelStyle.normal.textColor = Color.black;
             labelStyle.fontSize = 10;
 
             for (int i = 0; i < _editor.points.Count; i++) {
                 Vector3 worldPos = _editor.transform.TransformPoint(_editor.points[i]);
-                
+
+                if (i == 0) {
+                    Handles.color = Color.cyan;
+                } else if (i == _editor.points.Count - 1) {
+                    Handles.color = Color.red;
+                } else {
+                    Handles.color = Color.green;
+                }
+
+                Handles.DrawSolidDisc(worldPos, _editor.transform.forward, 0.08f);
+                Handles.color = Color.white;
                 Handles.Label(worldPos + new Vector3(0.15f, 0.15f, 0f), $"Point {i}", labelStyle);
+
                 EditorGUI.BeginChangeCheck();
 
                 Vector3 newWorldPos = Handles.FreeMoveHandle(worldPos, 0.15f, Vector3.zero, Handles.CircleHandleCap);

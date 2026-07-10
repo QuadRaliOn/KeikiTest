@@ -1,4 +1,6 @@
 using Architecture.Services;
+using GamePlay;
+using GamePlay.Tracing;
 using UI.Factory;
 using UnityEngine;
 using Zenject;
@@ -6,9 +8,9 @@ using Object = UnityEngine.Object;
 
 namespace Architecture.GlobalStateMachine.States {
     public class GameplayState : IState, ITickable {
-        private readonly SceneLoader _sceneLoader;
-        private readonly UIFactory _uiFactory;
-        private readonly LevelService _levelService;
+        private readonly ISceneLoader _sceneLoader;
+        private readonly IUIFactory _uiFactory;
+        private readonly ILevelService _levelService;
         private readonly IGameStateMachine _stateMachine;
         private readonly IAssetProvider _assetProvider;
         private readonly GameplaySession.Factory _sessionFactory;
@@ -19,9 +21,9 @@ namespace Architecture.GlobalStateMachine.States {
         private bool _isActive;
 
         public GameplayState(
-            SceneLoader sceneLoader,
-            UIFactory uiFactory,
-            LevelService levelService,
+            ISceneLoader sceneLoader,
+            IUIFactory uiFactory,
+            ILevelService levelService,
             IGameStateMachine stateMachine,
             IAssetProvider assetProvider,
             GameplaySession.Factory sessionFactory) {
@@ -39,7 +41,7 @@ namespace Architecture.GlobalStateMachine.States {
         }
 
         public void Tick() {
-            if (_isActive) _activeSession?.Tick();
+            _activeSession?.Tick();
         }
 
         public void Exit() {
@@ -49,6 +51,7 @@ namespace Architecture.GlobalStateMachine.States {
             _activeSession = null;
 
             if (_gamePlayPanel != null) {
+                _gamePlayPanel.OnHomePressed -= OnHomePressed;
                 Object.Destroy(_gamePlayPanel.gameObject);
                 _gamePlayPanel = null;
             }
@@ -56,26 +59,21 @@ namespace Architecture.GlobalStateMachine.States {
             _activeLevel = null;
         }
 
-        // ────────── Private ──────────
-
         private void OnSceneLoaded() {
             if (!_isActive) return;
 
             _activeLevel = _levelService.GetActiveLevel();
             _gamePlayPanel = _uiFactory.CreateGamePlayPanel();
 
-            if (_gamePlayPanel == null) return;
-
             Sprite silhouette = _assetProvider.LoadAsset<Sprite>(_activeLevel.spritePath);
-            _gamePlayPanel.Initialize(silhouette, OnHomePressed);
+            _gamePlayPanel.Initialize(silhouette);
+            _gamePlayPanel.OnHomePressed += OnHomePressed;
 
             _activeSession = _sessionFactory.Create(_gamePlayPanel, _activeLevel);
             _activeSession.Start(OnLevelCompleted);
         }
 
         private void OnLevelCompleted() {
-            if (!_isActive) return;
-
             int totalLevels = _levelService.GetTotalLevelsInCategory(_activeLevel.category);
             int nextLvlIdx = (_levelService.ActivePayload.LevelIndex + 1) % totalLevels;
             _levelService.ActivePayload = new GameplayStatePayload(_activeLevel.category, nextLvlIdx);

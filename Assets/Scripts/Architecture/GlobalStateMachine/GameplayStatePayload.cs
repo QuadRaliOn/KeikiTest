@@ -1,4 +1,7 @@
-namespace Architecture.Services
+using Architecture.Services;
+using GamePlay;
+
+namespace Architecture.GlobalStateMachine
 {
     public class GameplayStatePayload
     {

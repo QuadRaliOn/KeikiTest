@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Architecture.Services {
+namespace GamePlay {
     [Serializable]
     public class LevelData {
         public string name;

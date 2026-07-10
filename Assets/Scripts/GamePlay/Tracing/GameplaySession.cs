@@ -1,58 +1,56 @@
 using System;
 using System.Collections;
 using Architecture.Boot;
+using Architecture.Services;
 using DG.Tweening;
 using UI.Factory;
 using UnityEngine;
 using Zenject;
 
-namespace Architecture.Services {
+namespace GamePlay.Tracing {
     public class GameplaySession : IDisposable {
+        private static readonly string[] SuccessPhrases = { "Awesome", "Excellent", "Thats_good" };
+        
         private readonly GamePlayPanel _gamePlayPanel;
         private readonly LevelData _activeLevel;
-        private readonly IGameplayFactory _gameplayFactory;
         private readonly ISoundService _soundService;
         private readonly ICoroutineRunner _coroutineRunner;
+        private readonly IIdleHintService _idleHintService;
+        private readonly TracingStrokeView _strokeView;
+        private readonly TracingInputProcessor _inputProcessor;
 
-        private TracingStrokeView _strokeView;
-        private TracingInputProcessor _inputProcessor;
         private Action _onLevelCompleted;
-
         private int _currentStrokeIndex;
         private bool _inputProcessorEnabled;
         private bool _isDisposed;
 
-        private const float OutOfBoundsPixelRadius = 80f;
-        private const float ReachedPointPixelRadius = 35f;
-
         public GameplaySession(
             GamePlayPanel gamePlayPanel,
             LevelData activeLevel,
-            IGameplayFactory gameplayFactory,
             ISoundService soundService,
-            ICoroutineRunner coroutineRunner) {
+            ICoroutineRunner coroutineRunner,
+            IIdleHintService idleHintService,
+            TracingStrokeView strokeView,
+            TracingInputProcessor inputProcessor) {
             _gamePlayPanel = gamePlayPanel;
             _activeLevel = activeLevel;
-            _gameplayFactory = gameplayFactory;
             _soundService = soundService;
             _coroutineRunner = coroutineRunner;
+            _idleHintService = idleHintService;
+            _strokeView = strokeView;
+            _inputProcessor = inputProcessor;
         }
 
         public void Start(Action onLevelCompleted) {
             _onLevelCompleted = onLevelCompleted;
-
-            _strokeView = new TracingStrokeView(
-                _gamePlayPanel.TracingContainer,
-                _gamePlayPanel.GetComponent<RectTransform>(),
-                _gameplayFactory
-            );
-
             _coroutineRunner.StartCoroutine(PlayIntroAndStartTracing());
         }
 
         public void Tick() {
-            if (_isDisposed || !_inputProcessorEnabled || _inputProcessor == null) return;
-            _inputProcessor.ProcessInput();
+            _idleHintService.Tick(Time.deltaTime);
+
+            if (_inputProcessorEnabled)
+                _inputProcessor.ProcessInput();
         }
 
         public void Dispose() {
@@ -60,16 +58,15 @@ namespace Architecture.Services {
             _isDisposed = true;
             _inputProcessorEnabled = false;
 
+            _idleHintService.StopTracking();
+
             _strokeView?.DestroyVisuals();
-            _strokeView = null;
-            _inputProcessor = null;
 
             DOTween.Clear();
         }
 
-        // ────────── Private: Flow ──────────
-
         private IEnumerator PlayIntroAndStartTracing() {
+            _gamePlayPanel.AnimateShow();
             float duration = _soundService.PlayAudio(_activeLevel.audioPath);
             yield return new WaitForSeconds(duration);
 
@@ -92,18 +89,18 @@ namespace Architecture.Services {
                 stroke,
                 _activeLevel.trailColor,
                 onReady: () => {
-                    if (!_isDisposed) _inputProcessorEnabled = true;
+                    if (_isDisposed)
+                        return;
+                    _inputProcessorEnabled = true;
+                    _idleHintService.StartTracking(
+                        _activeLevel.audioPath,
+                        stroke.points,
+                        _gamePlayPanel.TracingContainer,
+                        _gamePlayPanel.GetComponent<RectTransform>());
                 }
             );
 
-            _inputProcessor = new TracingInputProcessor(
-                _gamePlayPanel.TracingContainer,
-                _strokeView,
-                stroke.points.Count,
-                OutOfBoundsPixelRadius,
-                ReachedPointPixelRadius,
-                onStrokeCompleted: OnStrokeCompleted
-            );
+            _inputProcessor.ResetForStroke(stroke.points.Count, OnStrokeCompleted);
         }
 
         private void OnStrokeCompleted() {
@@ -117,9 +114,22 @@ namespace Architecture.Services {
         }
 
         private IEnumerator CompleteLevelRoutine() {
-            string[] successPhrases = { "Awesome", "Excellent", "Thats_good" };
-            float duration = _soundService.PlayRandomPhrase(successPhrases);
-            yield return new WaitForSeconds(duration > 0f ? duration : 1.0f);
+            float duration = _soundService.PlayRandomPhrase(SuccessPhrases);
+            float waitLimit = Mathf.Max(duration > 0f ? duration : 1.5f, 1.2f);
+
+            _gamePlayPanel.TracingContainer.DOScale(1.15f, 0.4f).SetEase(Ease.OutBack);
+
+            yield return new WaitForSeconds(waitLimit);
+
+            if (_isDisposed) yield break;
+
+            bool hideDone = false;
+            _gamePlayPanel.AnimateHide(() => hideDone = true);
+
+            while (!hideDone)
+                yield return null;
+
+            yield return new WaitForSeconds(0.3f);
 
             if (_isDisposed) yield break;
             _onLevelCompleted?.Invoke();

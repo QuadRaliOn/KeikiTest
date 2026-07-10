@@ -1,33 +1,36 @@
 using System;
+using UI.Factory;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace Architecture.Services {
+namespace GamePlay.Tracing {
     public class TracingInputProcessor {
-        private readonly RectTransform _container;
+        private const float OutOfBoundsPixelRadius = 80f;
+        private const float ReachedPointPixelRadius = 35f;
+        
+        private readonly GamePlayPanel _gamePlayPanel;
         private readonly TracingStrokeView _view;
-        private readonly int _totalPoints;
-        private readonly float _outOfBoundsRadius;
-        private readonly float _reachedPointRadius;
-        private readonly Action _onStrokeCompleted;
+        
+        private Action _onStrokeCompleted;
 
+        private int _totalPoints;
         private int _currentPointIndex;
         private bool _isTracing;
         private bool _isComplete;
 
-        public TracingInputProcessor(
-            RectTransform container,
-            TracingStrokeView view,
-            int totalPoints,
-            float outOfBoundsRadius,
-            float reachedPointRadius,
-            Action onStrokeCompleted) {
-            _container = container;
+        private RectTransform Container => _gamePlayPanel.TracingContainer;
+
+        public TracingInputProcessor(GamePlayPanel gamePlayPanel, TracingStrokeView view) {
+            _gamePlayPanel = gamePlayPanel;
             _view = view;
+        }
+
+        public void ResetForStroke(int totalPoints, Action onStrokeCompleted) {
             _totalPoints = totalPoints;
-            _outOfBoundsRadius = outOfBoundsRadius;
-            _reachedPointRadius = reachedPointRadius;
             _onStrokeCompleted = onStrokeCompleted;
+            _currentPointIndex = 0;
+            _isTracing = false;
+            _isComplete = false;
         }
 
         public void ProcessInput() {
@@ -44,13 +47,13 @@ namespace Architecture.Services {
             Vector2 screenPos = pointer.position.ReadValue();
 
             if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                    _container, screenPos, null, out Vector2 localPoint))
+                    Container, screenPos, null, out Vector2 localPoint))
                 return;
 
             Vector2 mascotPos = _view.GetMascotPosition();
 
             if (!_isTracing) {
-                if (Vector2.Distance(localPoint, mascotPos) < _outOfBoundsRadius)
+                if (Vector2.Distance(localPoint, mascotPos) < OutOfBoundsPixelRadius)
                     _isTracing = true;
                 else
                     return;
@@ -66,7 +69,7 @@ namespace Architecture.Services {
             Vector2 projection = ProjectOntoSegment(localPoint, a, b);
             float distToPath = Vector2.Distance(localPoint, projection);
 
-            if (distToPath >= _outOfBoundsRadius) {
+            if (distToPath >= OutOfBoundsPixelRadius) {
                 _isTracing = false;
                 return;
             }
@@ -74,7 +77,7 @@ namespace Architecture.Services {
             _view.SetMascotPosition(projection);
             _view.UpdateTrail(_currentPointIndex, projection);
 
-            if (Vector2.Distance(projection, b) < _reachedPointRadius)
+            if (Vector2.Distance(projection, b) < ReachedPointPixelRadius)
                 AdvanceToNextPoint();
         }
 

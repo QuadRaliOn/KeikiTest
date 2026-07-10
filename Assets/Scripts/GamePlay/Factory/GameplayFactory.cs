@@ -1,10 +1,11 @@
 using System;
+using Architecture.Services;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
 
-namespace Architecture.Services {
+namespace GamePlay.Factory {
     public class GameplayFactory : IGameplayFactory {
         private readonly DiContainer _container;
         private readonly IAssetProvider _assetProvider;
@@ -53,6 +54,14 @@ namespace Architecture.Services {
             Image img = InstantiateImage(AssetPath.TrailSegment, parent);
             img.color = color;
             return img;
+        }
+
+        public Image CreateFingerHint(Transform parent, Vector2 position) {
+            var image = InstantiateImage(AssetPath.Finger, parent);
+            
+            image.rectTransform.anchoredPosition = position;
+            image.rectTransform.SetAsLastSibling();
+            return image;
         }
 
         private Image InstantiateImage(string path, Transform parent) {

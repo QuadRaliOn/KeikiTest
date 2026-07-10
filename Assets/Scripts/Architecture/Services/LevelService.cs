@@ -1,7 +1,9 @@
 using System.Collections.Generic;
+using Architecture.GlobalStateMachine;
+using GamePlay;
 
 namespace Architecture.Services {
-    public class LevelService {
+    public class LevelService : ILevelService {
         private readonly LevelDatabase _database;
 
         public LevelService(LevelDatabase database) {
@@ -12,7 +14,6 @@ namespace Architecture.Services {
 
         public LevelData GetActiveLevel() {
             if (ActivePayload == null) {
-                // Default fallback
                 ActivePayload = new GameplayStatePayload(CategoryType.Letters, 0);
             }
 
@@ -25,7 +26,6 @@ namespace Architecture.Services {
             var categoryLevels = _database.Levels.FindAll(l => l.category == category);
             if (categoryLevels.Count == 0) return null;
 
-            // Loop over database levels if levelIndex exceeds the count
             int idx = levelIndex % categoryLevels.Count;
             return categoryLevels[idx];
         }
